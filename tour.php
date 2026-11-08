@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +17,6 @@
     </noscript>
 </head>
 
-
 <body>
 
     <header>
@@ -32,11 +30,11 @@
             <span></span>
         </label>
         <nav aria-label="Navigasi Utama">
-            <a href="index.html">Beranda</a>
-            <a href="about.html">Tentang</a>
-            <a href="music.html">Musik</a>
-            <a href="tour.html" class="active" aria-current="page">Jadwal Tour</a>
-            <a href="contact.html">Kontak</a>
+            <a href="index.php">Beranda</a>
+            <a href="about.php">Tentang</a>
+            <a href="music.php">Musik</a>
+            <a href="tour.php" class="active" aria-current="page">Jadwal Tour</a>
+            <a href="contact.php">Kontak</a>
         </nav>
     </header>
 
@@ -145,5 +143,5 @@
     <script src="lib/script.js" defer></script>
 </body>
 
-
 </html>
+

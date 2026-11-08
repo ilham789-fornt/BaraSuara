@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +17,6 @@
     </noscript>
 </head>
 
-
 <body>
     <header>
         <div class="logo">
@@ -31,11 +29,11 @@
             <span></span>
         </label>
         <nav aria-label="Navigasi Utama">
-            <a href="index.html" class="active" aria-current="page">Beranda</a>
-            <a href="about.html">Tentang</a>
-            <a href="music.html">Musik</a>
-            <a href="tour.html">Jadwal Tour</a>
-            <a href="contact.html">Kontak</a>
+            <a href="index.php" class="active" aria-current="page">Beranda</a>
+            <a href="about.php">Tentang</a>
+            <a href="music.php">Musik</a>
+            <a href="tour.php">Jadwal Tour</a>
+            <a href="contact.php">Kontak</a>
         </nav>
     </header>
 
@@ -45,7 +43,7 @@
                 <h1 id="hero-title" class="glitch" data-text="BARASUARA">BARASUARA</h1>
                 <p>Energi. Emosi. Eksplorasi.</p>
                 <div class="hero-btns">
-                    <a href="music.html" class="btn">Jelajahi Musik</a>
+                    <a href="music.php" class="btn">Jelajahi Musik</a>
                     <a href="#latest-news" class="btn btn-outline">Berita Terbaru</a>
                 </div>
             </div>
@@ -65,7 +63,7 @@
                     <h3 style="margin: 10px 0;">Persiapan Tour "Pikiran dan Perjalanan" 2026</h3>
                     <p style="color: #bbb; font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">Simak persiapan
                         intensif Iga Massardi dkk menjelang pembukaan tour resmi di Jakarta...</p>
-                    <a href="tour.html" class="read-more" aria-label="Baca selengkapnya tentang persiapan tur"
+                    <a href="tour.php" class="read-more" aria-label="Baca selengkapnya tentang persiapan tur"
                         style="color: var(--primary-color, #c24b2f); text-decoration: none; font-weight: bold;">Selengkapnya
                         →</a>
                 </article>
@@ -97,7 +95,7 @@
                             style="margin: 0 auto; border-radius: 6px; width: 100%; height: auto;">
                     </div>
                     <h3 style="margin-bottom: 15px;">Taifun</h3>
-                    <a href="music.html?focus=taifun" class="btn"
+                    <a href="music.php?focus=taifun" class="btn"
                         style="width: 100%; padding: 10px 0; font-size: 0.9rem;">Lihat Album</a>
                 </article>
                 <article class="card" style="flex: 1 1 280px; max-width: 320px; box-sizing: border-box;">
@@ -107,7 +105,7 @@
                             style="margin: 0 auto; border-radius: 6px; width: 100%; height: auto;">
                     </div>
                     <h3 style="margin-bottom: 15px;">Pikiran dan Perjalanan</h3>
-                    <a href="music.html?focus=pikiran-perjalanan" class="btn"
+                    <a href="music.php?focus=pikiran-perjalanan" class="btn"
                         style="width: 100%; padding: 10px 0; font-size: 0.9rem;">Lihat Album</a>
                 </article>
 
@@ -118,7 +116,7 @@
                             style="margin: 0 auto; border-radius: 6px; width: 100%; height: auto; filter: hue-rotate(180deg);">
                     </div>
                     <h3 style="margin-bottom: 15px;">Jalaran Sadrah</h3>
-                    <a href="music.html?focus=jalaran-sadrah" class="btn"
+                    <a href="music.php?focus=jalaran-sadrah" class="btn"
                         style="width: 100%; padding: 10px 0; font-size: 0.9rem;">Lihat Album</a>
                 </article>
             </div>
@@ -146,7 +144,7 @@
                         <h3 style="margin: 0; font-size: 1.2rem;">Jakarta</h3>
                     </div>
                     <div class="tour-action">
-                        <a href="tour.html#jakarta" class="btn btn-sm" aria-label="Lihat informasi tiket tur Jakarta"
+                        <a href="tour.php#jakarta" class="btn btn-sm" aria-label="Lihat informasi tiket tur Jakarta"
                             style="padding: 8px 20px;">Info Tiket</a>
                     </div>
                 </article>
@@ -165,13 +163,13 @@
                         <h3 style="margin: 0; font-size: 1.2rem;">Bandung</h3>
                     </div>
                     <div class="tour-action">
-                        <a href="tour.html#bandung" class="btn btn-sm" aria-label="Lihat informasi tiket tur Bandung"
+                        <a href="tour.php#bandung" class="btn btn-sm" aria-label="Lihat informasi tiket tur Bandung"
                             style="padding: 8px 20px;">Info Tiket</a>
                     </div>
                 </article>
             </div>
             <div class="text-center" style="margin-top: 35px;">
-                <a href="tour.html" class="btn btn-outline">Lihat Semua Jadwal</a>
+                <a href="tour.php" class="btn btn-outline">Lihat Semua Jadwal</a>
             </div>
         </section>
 
@@ -212,3 +210,6 @@
 
     <script src="lib/script.js" defer></script>
 </body>
+
+</html>
+

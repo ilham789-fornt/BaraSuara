@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +17,6 @@
     </noscript>
 </head>
 
-
 <body>
 
     <header>
@@ -32,11 +30,11 @@
             <span></span>
         </label>
         <nav aria-label="Navigasi Utama">
-            <a href="index.html">Beranda</a>
-            <a href="about.html">Tentang</a>
-            <a href="music.html">Musik</a>
-            <a href="tour.html">Jadwal Tour</a>
-            <a href="contact.html" class="active" aria-current="page">Kontak</a>
+            <a href="index.php">Beranda</a>
+            <a href="about.php">Tentang</a>
+            <a href="music.php">Musik</a>
+            <a href="tour.php">Jadwal Tour</a>
+            <a href="contact.php" class="active" aria-current="page">Kontak</a>
         </nav>
     </header>
 
@@ -105,7 +103,7 @@
                 <p id="contact-status" class="form-status" role="status" aria-live="polite"></p>
 
                 <div class="contact-direct text-center"
-                    style="margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                    style="margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.05)">
                     <p style="color: #888; font-size: 0.9rem; margin-bottom: 10px;">Atau hubungi via email secara
                         langsung:</p>
                     <a href="mailto:booking@barasuara.com" class="direct-email"
@@ -134,5 +132,5 @@
     <script src="lib/script.js" defer></script>
 </body>
 
-
 </html>
+

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +17,6 @@
     </noscript>
 </head>
 
-
 <body>
     <header>
         <div class="logo">
@@ -31,11 +29,11 @@
             <span></span>
         </label>
         <nav aria-label="Navigasi Utama">
-            <a href="index.html">Beranda</a>
-            <a href="about.html">Tentang</a>
-            <a href="music.html" class="active" aria-current="page">Musik</a>
-            <a href="tour.html">Jadwal Tour</a>
-            <a href="contact.html">Kontak</a>
+            <a href="index.php">Beranda</a>
+            <a href="about.php">Tentang</a>
+            <a href="music.php" class="active" aria-current="page">Musik</a>
+            <a href="tour.php">Jadwal Tour</a>
+            <a href="contact.php">Kontak</a>
         </nav>
     </header>
 
@@ -176,7 +174,6 @@
                 <article id="album-jalaran-sadrah" class="album-card"
                     style="display: flex; gap: 40px; background: rgba(255,255,255,0.03); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
                     <div class="album-cover" style="flex: 1 1 250px; max-width: 280px; margin: 0 auto;">
-                        <!-- SINKRONISASI DATA ASSET: Mempertahankan pointer gambar mandiri milik pengguna -->
                         <img src="images/JALARAN_SADRAH.png" alt="Cover Album Jalaran Sadrah" width="300" height="300"
                             style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 12px 24px rgba(0,0,0,0.6);">
                     </div>
@@ -245,5 +242,5 @@
     <script src="lib/script.js" defer></script>
 </body>
 
-
 </html>
+

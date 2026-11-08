@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +17,6 @@
     </noscript>
 </head>
 
-
 <body>
 
     <header>
@@ -32,11 +30,11 @@
             <span></span>
         </label>
         <nav aria-label="Navigasi Utama">
-            <a href="index.html">Beranda</a>
-            <a href="about.html" class="active" aria-current="page">Tentang</a>
-            <a href="music.html">Musik</a>
-            <a href="tour.html">Jadwal Tour</a>
-            <a href="contact.html">Kontak</a>
+            <a href="index.php">Beranda</a>
+            <a href="about.php" class="active" aria-current="page">Tentang</a>
+            <a href="music.php">Musik</a>
+            <a href="tour.php">Jadwal Tour</a>
+            <a href="contact.php">Kontak</a>
         </nav>
     </header>
 
@@ -205,13 +203,11 @@
 
     <footer>
         <div class="footer-content text-center">
-            <!-- REKAYASA SISTEM NAVIGASI SOSIAL MEDIA (URUTAN LOGIS) -->
             <div class="social-links" style="justify-content: center; display: flex; gap: 20px; margin-bottom: 15px;">
                 <a href="https://www.instagram.com/barasuara" target="_blank" rel="noopener noreferrer"
                     aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="https://www.youtube.com/barasuara" target="_blank" rel="noopener noreferrer"
                     aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <!-- SINKRONISASI TAUTAN RESMI (FIXED BUG) -->
                 <a href="https://open.spotify.com/intl-id/artist/5RbI1PF4n02wWKmgjk7hAE?si=zHUmzxMMSkq_e1ENO2OcPQ&nd=1&dlsi=a7cf13a4230f4098"
                     target="_blank" rel="noopener noreferrer" aria-label="Spotify"><i class="fab fa-spotify"></i></a>
             </div>
@@ -222,5 +218,5 @@
     <script src="lib/script.js" defer></script>
 </body>
 
-
 </html>
+
