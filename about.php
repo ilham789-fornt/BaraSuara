@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/includes/bootstrap.php';
+$activePage = 'about';
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -19,24 +23,8 @@
 
 <body>
 
-    <header>
-        <div class="logo">
-            <h1>Barasuara</h1>
-        </div>
-        <input type="checkbox" id="nav-toggle-about" class="hamburger-toggle" aria-hidden="true">
-        <label for="nav-toggle-about" class="hamburger-btn" aria-label="Buka/tutup menu navigasi">
-            <span></span>
-            <span></span>
-            <span></span>
-        </label>
-        <nav aria-label="Navigasi Utama">
-            <a href="index.php">Beranda</a>
-            <a href="about.php" class="active" aria-current="page">Tentang</a>
-            <a href="music.php">Musik</a>
-            <a href="tour.php">Jadwal Tour</a>
-            <a href="contact.php">Kontak</a>
-        </nav>
-    </header>
+    <?php require __DIR__ . '/includes/nav.php'; ?>
+    <?php require __DIR__ . '/includes/flash.php'; ?>
 
     <main style="padding-bottom: 60px;">
         <!-- SECTION 1: PROFIL BAND -->

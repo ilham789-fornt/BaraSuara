@@ -1,41 +1,25 @@
-<!DOCTYPE html>
-<html lang="id">
+<?php
+require_once __DIR__ . '/includes/bootstrap.php';
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Eksplorasi diskografi lengkap Barasuara - Temukan video musik dan audio dari era Taifun hingga Jalaran Sadrah.">
-    <title>Musik - Barasuara | Portal Fans Resmi</title>
+// SELECT: Ambil seluruh album dan lagu dari database
+$albums = db()->query('SELECT * FROM albums ORDER BY tahun_rilis ASC, id ASC')->fetchAll();
+$tracksStmt = db()->query('SELECT * FROM tracks ORDER BY album_id ASC, track_number ASC, id ASC');
+$tracksByAlbum = [];
+foreach ($tracksStmt->fetchAll() as $track) {
+    $tracksByAlbum[(int) $track['album_id']][] = $track;
+}
 
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    </noscript>
-</head>
+$albumFocusSlug = static function (string $title): string {
+    $clean = preg_replace('/\bdan\b/i', '', $title);
+    $slug = strtolower(trim((string) preg_replace('/[^a-zA-Z0-9]+/', '-', (string) $clean), '-'));
+    return $slug !== '' ? $slug : 'album';
+};
 
-<body>
-    <header>
-        <div class="logo">
-            <h1>Barasuara</h1>
-        </div>
-        <input type="checkbox" id="nav-toggle-music" class="hamburger-toggle" aria-hidden="true">
-        <label for="nav-toggle-music" class="hamburger-btn" aria-label="Buka/tutup menu navigasi">
-            <span></span>
-            <span></span>
-            <span></span>
-        </label>
-        <nav aria-label="Navigasi Utama">
-            <a href="index.php">Beranda</a>
-            <a href="about.php">Tentang</a>
-            <a href="music.php" class="active" aria-current="page">Musik</a>
-            <a href="tour.php">Jadwal Tour</a>
-            <a href="contact.php">Kontak</a>
-        </nav>
-    </header>
+$pageTitle = 'Musik';
+$pageDescription = 'Eksplorasi diskografi lengkap Barasuara - Temukan video musik dan audio dari era Taifun hingga Jalaran Sadrah.';
+$activePage = 'music';
+require __DIR__ . '/includes/layout_header.php';
+?>
 
     <main style="padding-bottom: 80px;">
         <section class="section fade-in" aria-labelledby="diskografi-heading">
@@ -63,184 +47,61 @@
                 </div>
             </div>
 
-            <!-- ALBUM SHOWCASE PLATFORM -->
+            <!-- ALBUM SHOWCASE PLATFORM (DINAMIS DARI TABEL albums & tracks) -->
             <div class="music-showcase"
                 style="display: flex; flex-direction: column; gap: 50px; max-width: 1000px; margin: 0 auto;">
 
-                <!-- ALBUM 1: TAIFUN (9 TRACKS Complete) -->
-                <article id="album-taifun" class="album-card"
-                    style="display: flex; gap: 40px; background: rgba(255,255,255,0.03); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
-                    <div class="album-cover" style="flex: 1 1 250px; max-width: 280px; margin: 0 auto;">
-                        <img src="images/Taifun.png" alt="Cover Album Taifun" width="300" height="300"
-                            style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 12px 24px rgba(0,0,0,0.6);">
-                    </div>
-                    <div class="album-info" style="flex: 2 1 500px;">
-                        <h3 style="font-size: 1.8rem; margin: 0 0 10px 0; color: #fff;">Taifun (2015)</h3>
-                        <p style="color: #aaa; margin: 0 0 20px 0; font-size: 0.95rem; line-height: 1.5;">Album perdana
-                            yang memperkenalkan karakter musik Barasuara yang eksplosif, penuh dengan harmoni vokal
-                            bersahutan dan lirik puitis.</p>
+                <?php if (!$albums): ?>
+                    <p class="text-center" style="color: #888;">Belum ada data album di katalog diskografi.</p>
+                <?php endif; ?>
 
-                        <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--secondary-color, #ff6a3d);">Daftar
-                            Lagu (klik untuk preview YouTube):</h4>
-
-                        <!-- RE-DESIGN: Presisi 3 Kolom x 3 Baris Sempurna -->
-                        <div class="button-group"
-                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;">
-                            <button class="btn play-video-btn" data-title="Nyala Suara" data-vid="zCKf6bXI_44"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 1. Nyala Suara</button>
-                            <button class="btn play-video-btn" data-title="Sendu Melagu" data-vid="lYDZ-ov68P0"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 2. Sendu Melagu</button>
-                            <button class="btn play-video-btn" data-title="Bahas Bahasa" data-vid="eOQ7aFm6gpo"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 3. Bahas Bahasa</button>
-                            <button class="btn play-video-btn" data-title="Hagia" data-vid="HihvMi2mRlo"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 4. Hagia</button>
-                            <button class="btn play-video-btn" data-title="Api & Lentera" data-vid="_in_UdCY478"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 5. Api & Lentera</button>
-                            <button class="btn play-video-btn" data-title="Mengunci Ingatan" data-vid="YbYQk2oyGWc"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 6. Mengunci Ingatan</button>
-                            <button class="btn play-video-btn" data-title="Tarintih" data-vid="uP-w5EwMKyg"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 7. Tarintih</button>
-                            <button class="btn play-video-btn" data-title="Menunggang Badai" data-vid="-IlA3kPjuw0"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 8. Menunggang Badai</button>
-                            <button class="btn play-video-btn" data-title="Taifun" data-vid="Kfd1EjLIblM"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 9. Taifun</button>
+                <?php foreach ($albums as $album):
+                    $slug = $albumFocusSlug($album['judul_album']);
+                    $cover = !empty($album['cover_url']) ? $album['cover_url'] : 'images/Taifun.png';
+                    $albumTracks = $tracksByAlbum[(int) $album['id']] ?? [];
+                    ?>
+                    <article id="album-<?= e($slug) ?>" class="album-card"
+                        style="display: flex; gap: 40px; background: rgba(255,255,255,0.03); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
+                        <div class="album-cover" style="flex: 1 1 250px; max-width: 280px; margin: 0 auto;">
+                            <img src="<?= e($cover) ?>" alt="Cover Album <?= e($album['judul_album']) ?>" width="300"
+                                height="300"
+                                style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 12px 24px rgba(0,0,0,0.6);">
                         </div>
-                    </div>
-                </article>
+                        <div class="album-info" style="flex: 2 1 500px;">
+                            <h3 style="font-size: 1.8rem; margin: 0 0 10px 0; color: #fff;">
+                                <?= e($album['judul_album']) ?> (<?= (int) $album['tahun_rilis'] ?>)
+                            </h3>
+                            <p style="color: #aaa; margin: 0 0 20px 0; font-size: 0.95rem; line-height: 1.5;">
+                                <?= e($album['deskripsi']) ?>
+                            </p>
 
-                <!-- ALBUM 2: PIKIRAN DAN PERJALANAN (9 TRACKS Complete) -->
-                <article id="album-pikiran-perjalanan" class="album-card"
-                    style="display: flex; gap: 40px; background: rgba(255,255,255,0.03); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
-                    <div class="album-cover" style="flex: 1 1 250px; max-width: 280px; margin: 0 auto;">
-                        <img src="images/pikiran-perjalanan.png" alt="Cover Album Pikiran dan Perjalanan" width="300"
-                            height="300"
-                            style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 12px 24px rgba(0,0,0,0.6);">
-                    </div>
-                    <div class="album-info" style="flex: 2 1 500px;">
-                        <h3 style="font-size: 1.8rem; margin: 0 0 10px 0; color: #fff;">Pikiran dan Perjalanan (2019)
-                        </h3>
-                        <p style="color: #aaa; margin: 0 0 20px 0; font-size: 0.95rem; line-height: 1.5;">Eksperimen
-                            sonik dengan aransemen instrumen berlapis yang jauh lebih kompleks serta membawa tema
-                            kedewasaan dan dinamika kehidupan.</p>
+                            <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--secondary-color, #ff6a3d);">
+                                Daftar Lagu (klik untuk preview YouTube):
+                            </h4>
 
-                        <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--secondary-color, #ff6a3d);">Daftar
-                            Lagu (klik untuk preview YouTube):</h4>
-
-                        <!-- RE-DESIGN: Presisi 3 Kolom x 3 Baris Sempurna -->
-                        <div class="button-group"
-                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;">
-                            <button class="btn play-video-btn" data-title="Pikiran dan Perjalanan"
-                                data-vid="oto8TmSFEK8"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 1. Pikiran & Perjalanan</button>
-                            <button class="btn play-video-btn" data-title="Guna Manusia" data-vid="Ik_O-r8kiIc"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 2. Guna Manusia</button>
-                            <button class="btn play-video-btn" data-title="Pancarona" data-vid="ia1jzbIVvkM"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 3. Pancarona</button>
-                            <button class="btn play-video-btn" data-title="Seribu Racun" data-vid="gt7PZcQyW34"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 4. Seribu Racun</button>
-                            <button class="btn play-video-btn" data-title="Masa Mesias" data-vid="f1oyBHjs3o4"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 5. Masa Mesias</button>
-                            <button class="btn play-video-btn" data-title="Tentukan Arah" data-vid="8DFdoJknoSQ"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 6. Tentukan Arah</button>
-                            <button class="btn play-video-btn" data-title="Tirai Cahaya" data-vid="h07PZ2IyxzM"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 7. Tirai Cahaya</button>
-                            <button class="btn play-video-btn" data-title="Haluan" data-vid="A1TCaBdyz_8"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 8. Haluan</button>
-                            <button class="btn play-video-btn" data-title="Samara" data-vid="JoLryGtCxQA"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 9. Samara</button>
+                            <?php if ($albumTracks): ?>
+                                <div class="button-group"
+                                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;">
+                                    <?php foreach ($albumTracks as $idx => $track):
+                                        $no = $track['track_number'] ?: ($idx + 1);
+                                        ?>
+                                        <button class="btn play-video-btn"
+                                            data-title="<?= e($track['judul_lagu']) ?>"
+                                            data-vid="<?= e($track['youtube_url']) ?>"
+                                            style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                            <i class="fas fa-play-circle"></i> <?= (int) $no ?>. <?= e($track['judul_lagu']) ?>
+                                        </button>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <p style="color: #777; font-size: 0.9rem;">Belum ada lagu yang ditambahkan pada album ini.</p>
+                            <?php endif; ?>
                         </div>
-                    </div>
-                </article>
-
-                <!-- ALBUM 3: JALARAN SADRAH (9 TRACKS Complete) -->
-                <article id="album-jalaran-sadrah" class="album-card"
-                    style="display: flex; gap: 40px; background: rgba(255,255,255,0.03); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); align-items: center; flex-wrap: wrap;">
-                    <div class="album-cover" style="flex: 1 1 250px; max-width: 280px; margin: 0 auto;">
-                        <img src="images/JALARAN_SADRAH.png" alt="Cover Album Jalaran Sadrah" width="300" height="300"
-                            style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 12px 24px rgba(0,0,0,0.6);">
-                    </div>
-                    <div class="album-info" style="flex: 2 1 500px;">
-                        <h3 style="font-size: 1.8rem; margin: 0 0 10px 0; color: #fff;">Jalaran Sadrah (2024)</h3>
-                        <p style="color: #aaa; margin: 0 0 20px 0; font-size: 0.95rem; line-height: 1.5;">Karya
-                            monumental pasrah yang memadukan kemegahan aransemen orkestra Erwin Gutawa serta kolaborasi
-                            folk magis bersama Sujiwo Tejo.</p>
-
-                        <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--secondary-color, #ff6a3d);">Daftar
-                            Lagu (klik untuk preview YouTube):</h4>
-
-                        <!-- RE-DESIGN: Presisi 3 Kolom x 3 Baris Sempurna -->
-                        <div class="button-group"
-                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;">
-                            <button class="btn play-video-btn" data-title="Antea" data-vid="a-sNUwW7g7Q"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 1. Antea</button>
-                            <button class="btn play-video-btn" data-title="Etalase" data-vid="OQWZe5klDaA"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 2. Etalase</button>
-                            <button class="btn play-video-btn" data-title="Merayakan Fana" data-vid="QLyqdOQWMmw"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 3. Merayakan Fana</button>
-                            <button class="btn play-video-btn" data-title="Fatalis" data-vid="RlaHAtv90Co"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 4. Fatalis</button>
-                            <button class="btn play-video-btn" data-title="Biyang" data-vid="1QBgKkSCsyE"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 5. Biyang (feat. S. Tejo)</button>
-                            <button class="btn play-video-btn" data-title="Terbuang Dalam Waktu" data-vid="xCchJ0ujd0o"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 6. Terbuang dlm Waktu</button>
-                            <button class="btn play-video-btn" data-title="Manusia (Sumarah)" data-vid="nqxV4X6WkxA"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 7. Manusia (Sumarah)</button>
-                            <button class="btn play-video-btn" data-title="Hitam dan Biru" data-vid="RMtw_SINxcA"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 8. Hitam dan Biru</button>
-                            <button class="btn play-video-btn" data-title="Habis Gelap" data-vid="GJ4gDua4FNI"
-                                style="padding: 12px; font-size: 0.85rem; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><i
-                                    class="fas fa-play-circle"></i> 9. Habis Gelap</button>
-                        </div>
-                    </div>
-                </article>
+                    </article>
+                <?php endforeach; ?>
 
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="footer-content text-center">
-            <div class="social-links" style="justify-content: center; display: flex; gap: 20px; margin-bottom: 15px;">
-                <a href="https://www.instagram.com/barasuara" target="_blank" rel="noopener noreferrer"
-                    aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.youtube.com/barasuara" target="_blank" rel="noopener noreferrer"
-                    aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://open.spotify.com/intl-id/artist/5RbI1PF4n02wWKmgjk7hAE?si=zHUmzxMMSkq_e1ENO2OcPQ&nd=1&dlsi=a7cf13a4230f4098"
-                    target="_blank" rel="noopener noreferrer" aria-label="Spotify"><i class="fab fa-spotify"></i></a>
-            </div>
-            <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted, #bbbbbb);">© 2026 Barasuara Fans Project.
-                Dikelola Oleh SIG Group.</p>
-        </div>
-    </footer>
-
-    <script src="lib/script.js" defer></script>
-</body>
-
-</html>
-
+<?php require __DIR__ . '/includes/layout_footer.php'; ?>

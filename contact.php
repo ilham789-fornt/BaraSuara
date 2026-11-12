@@ -1,136 +1,173 @@
-<!DOCTYPE html>
-<html lang="id">
+<?php
+require_once __DIR__ . '/includes/bootstrap.php';
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Hubungi manajemen Barasuara untuk urusan bisnis, pemesanan panggung, atau pertanyaan pers.">
-    <title>Kontak - Barasuara | Portal Fans Resmi</title>
+$user = current_user();
+$errors = [];
+$old = [];
 
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    </noscript>
-</head>
+$categories = [
+    'booking'     => 'Booking / Manggung',
+    'media'       => 'Media / Wawancara',
+    'partnership' => 'Sponsorship / Kemitraan',
+    'general'     => 'Pertanyaan Umum',
+];
 
-<body>
+// CREATE: simpan pesan kontak (hanya untuk user yang sudah login).
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $user = require_login('Silakan masuk atau daftar akun terlebih dahulu untuk menghubungi Barasuara.');
+    verify_csrf();
 
-    <header>
-        <div class="logo">
-            <h1>Barasuara</h1>
-        </div>
-        <input type="checkbox" id="nav-toggle-contact" class="hamburger-toggle" aria-hidden="true">
-        <label for="nav-toggle-contact" class="hamburger-btn" aria-label="Buka/tutup menu navigasi">
-            <span></span>
-            <span></span>
-            <span></span>
-        </label>
-        <nav aria-label="Navigasi Utama">
-            <a href="index.php">Beranda</a>
-            <a href="about.php">Tentang</a>
-            <a href="music.php">Musik</a>
-            <a href="tour.php">Jadwal Tour</a>
-            <a href="contact.php" class="active" aria-current="page">Kontak</a>
-        </nav>
-    </header>
+    // Honeypot anti-bot: jika terisi, abaikan diam-diam.
+    if (!empty($_POST['bot-field'])) {
+        redirect('contact.php');
+    }
 
-    <main style="padding-bottom: 60px;">
-        <section class="section fade-in" aria-labelledby="contact-heading">
-            <div class="contact-container"
-                style="max-width: 650px; margin: 0 auto; background: rgba(255, 255, 255, 0.03); padding: 40px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+    $old = [
+        'name'       => trim((string) ($_POST['name'] ?? '')),
+        'email'      => strtolower(trim((string) ($_POST['email'] ?? ''))),
+        'whatsapp'   => preg_replace('/[\s\-]/', '', (string) ($_POST['whatsapp'] ?? '')),
+        'subject'    => (string) ($_POST['subject'] ?? ''),
+        'event_date' => (string) ($_POST['event_date'] ?? ''),
+        'message'    => trim((string) ($_POST['message'] ?? '')),
+    ];
 
-                <div class="contact-header text-center" style="margin-bottom: 35px;">
-                    <h2 id="contact-heading" style="font-size: 2rem; margin-bottom: 12px; display: inline-block;">
-                        Hubungi Kami</h2>
-                    <p style="color: #aaa; font-size: 0.95rem; line-height: 1.5; max-width: 500px; margin: 0 auto;">
-                        Untuk kebutuhan <em>booking</em>, tawaran kolaborasi, atau pertanyaan seputar tur, silakan
-                        kirimkan pesan melalui formulir di bawah ini.
-                    </p>
+    if (mb_strlen($old['name']) < 3 || mb_strlen($old['name']) > 150) {
+        $errors[] = 'Nama / instansi minimal 3 karakter.';
+    }
+    if (!filter_var($old['email'], FILTER_VALIDATE_EMAIL) || strlen($old['email']) > 150) {
+        $errors[] = 'Email tidak valid.';
+    }
+    if (!preg_match('/^(\+62|62|0)8[0-9]{7,12}$/', $old['whatsapp'])) {
+        $errors[] = 'Nomor WhatsApp tidak valid (contoh: 081234567890).';
+    }
+    if (!isset($categories[$old['subject']])) {
+        $errors[] = 'Pilih subjek keperluan.';
+    }
+    $eventDate = null;
+    if ($old['event_date'] !== '') {
+        $d = DateTime::createFromFormat('Y-m-d', $old['event_date']);
+        if (!$d || $d->format('Y-m-d') !== $old['event_date']) {
+            $errors[] = 'Tanggal acara tidak valid.';
+        } else {
+            $eventDate = $old['event_date'];
+        }
+    }
+    if (mb_strlen($old['message']) < 10) {
+        $errors[] = 'Pesan minimal 10 karakter.';
+    }
+
+    if (!$errors) {
+        db()->prepare(
+            'INSERT INTO contact_inquiries (nama_pengirim, email, no_whatsapp, kategori_pesan, tanggal_acara_usulan, isi_pesan)
+             VALUES (?, ?, ?, ?, ?, ?)'
+        )->execute([$old['name'], $old['email'], $old['whatsapp'], $old['subject'], $eventDate, $old['message']]);
+
+        flash('success', 'Pesan Anda berhasil terkirim. Tim manajemen Barasuara akan menghubungi Anda melalui email/WhatsApp.');
+        redirect('contact.php');
+    }
+}
+
+$pageTitle = 'Kontak';
+$pageDescription = 'Hubungi manajemen Barasuara untuk urusan bisnis, pemesanan panggung, atau pertanyaan pers.';
+$activePage = 'contact';
+require __DIR__ . '/includes/layout_header.php';
+?>
+
+<main style="padding-bottom: 60px;">
+    <section class="section fade-in" aria-labelledby="contact-heading">
+        <div class="contact-container">
+
+            <div class="contact-header text-center">
+                <h2 id="contact-heading" style="font-size: 2rem; margin-bottom: 12px; display: inline-block;">
+                    Hubungi Kami</h2>
+                <p>Untuk kebutuhan <em>booking</em>, tawaran kolaborasi, atau pertanyaan seputar tur, silakan
+                    kirimkan pesan melalui formulir di bawah ini.</p>
+            </div>
+
+            <?php if (!$user): ?>
+                <div class="login-gate text-center">
+                    <i class="fas fa-user-lock"></i>
+                    <p>Anda perlu <strong>masuk</strong> atau <strong>mendaftar akun</strong> terlebih dahulu untuk
+                        mengirim pesan kepada manajemen Barasuara.</p>
+                    <div class="gate-actions">
+                        <a href="login.php?redirect=contact.php" class="btn"><i class="fas fa-sign-in-alt"></i> Masuk</a>
+                        <a href="register.php?redirect=contact.php" class="btn btn-outline"><i class="fas fa-user-plus"></i> Daftar Akun</a>
+                    </div>
                 </div>
+            <?php else: ?>
+                <?php if ($errors): ?>
+                    <div class="flash flash-error order-errors" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <ul><?php foreach ($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?></ul>
+                    </div>
+                <?php endif; ?>
 
-                <form id="contact-form" class="contact-form" style="display: flex; flex-direction: column; gap: 20px;">
-
+                <form method="post" class="contact-form">
+                    <?= csrf_field() ?>
                     <div class="visually-hidden" aria-hidden="true">
                         <label for="bot-field">Tinggalkan kosong jika Anda manusia:</label>
-                        <input type="text" id="bot-field" name="bot-field" tabindex="-1">
+                        <input type="text" id="bot-field" name="bot-field" tabindex="-1" autocomplete="off">
                     </div>
 
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-                        <label for="user-name" style="font-size: 0.9rem; font-weight: 600; color: #ccc;">Nama Lengkap /
-                            Instansi</label>
-                        <input type="text" id="user-name" name="name" required
+                    <div class="form-group">
+                        <label for="user-name">Nama Lengkap / Instansi</label>
+                        <input type="text" id="user-name" name="name" required maxlength="150"
                             placeholder="Cth: Gusty Faqikh - BEM Polnep"
-                            style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 6px; color: #fff; font-family: inherit;">
+                            value="<?= e($old['name'] ?? $user['full_name']) ?>">
                     </div>
 
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-                        <label for="user-email" style="font-size: 0.9rem; font-weight: 600; color: #ccc;">Alamat
-                            Email</label>
-                        <input type="email" id="user-email" name="email" required placeholder="email@domain.com"
-                            style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 6px; color: #fff; font-family: inherit;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="user-email">Alamat Email</label>
+                            <input type="email" id="user-email" name="email" required maxlength="150"
+                                value="<?= e($old['email'] ?? $user['email']) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="user-whatsapp">No. WhatsApp</label>
+                            <input type="tel" id="user-whatsapp" name="whatsapp" required maxlength="20"
+                                pattern="^(\+62|62|0)8[0-9]{7,12}$" placeholder="08xxxxxxxxxx"
+                                value="<?= e($old['whatsapp'] ?? '') ?>">
+                        </div>
                     </div>
 
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-                        <label for="message-subject" style="font-size: 0.9rem; font-weight: 600; color: #ccc;">Subjek
-                            Keperluan</label>
-                        <select id="message-subject" name="subject" required
-                            style="background: #111; border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 6px; color: #fff; font-family: inherit; cursor: pointer;">
-                            <option value="" disabled selected style="color: #666;">Pilih keperluan...</option>
-                            <option value="booking">Booking / Manggung</option>
-                            <option value="media">Media / Wawancara</option>
-                            <option value="partnership">Sponsorship / Kemitraan</option>
-                            <option value="general">Pertanyaan Umum</option>
-                        </select>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="message-subject">Subjek Keperluan</label>
+                            <select id="message-subject" name="subject" required>
+                                <option value="" disabled <?= empty($old['subject']) ? 'selected' : '' ?>>Pilih keperluan...</option>
+                                <?php foreach ($categories as $value => $label): ?>
+                                    <option value="<?= e($value) ?>" <?= ($old['subject'] ?? '') === $value ? 'selected' : '' ?>>
+                                        <?= e($label) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="event-date">Tanggal Acara <small>(opsional)</small></label>
+                            <input type="date" id="event-date" name="event_date" min="<?= date('Y-m-d') ?>"
+                                value="<?= e($old['event_date'] ?? '') ?>">
+                        </div>
                     </div>
 
-                    <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-                        <label for="user-message" style="font-size: 0.9rem; font-weight: 600; color: #ccc;">Pesan
-                            Rinci</label>
-                        <textarea id="user-message" name="message" rows="5" required
+                    <div class="form-group">
+                        <label for="user-message">Pesan Rinci</label>
+                        <textarea id="user-message" name="message" rows="5" required minlength="10"
                             placeholder="Tulis rincian pesan Anda di sini..."
-                            style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 6px; color: #fff; font-family: inherit; resize: vertical; line-height: 1.5;"></textarea>
+                            style="resize: vertical; line-height: 1.5;"><?= e($old['message'] ?? '') ?></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block"
-                        style="padding: 14px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px;">
+                    <button type="submit" class="btn btn-block" style="margin-top: 10px;">
                         Kirim Pesan <i class="fas fa-paper-plane" style="margin-left: 5px;"></i>
                     </button>
                 </form>
-                <p id="contact-status" class="form-status" role="status" aria-live="polite"></p>
+            <?php endif; ?>
 
-                <div class="contact-direct text-center"
-                    style="margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.05)">
-                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 10px;">Atau hubungi via email secara
-                        langsung:</p>
-                    <a href="mailto:booking@barasuara.com" class="direct-email"
-                        style="color: var(--secondary-color, #ff6a3d); text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: opacity 0.2s;"><i
-                            class="fas fa-envelope" style="margin-right: 8px;"></i> booking@barasuara.com</a>
-                </div>
+            <div class="contact-direct text-center">
+                <p>Atau hubungi via email secara langsung:</p>
+                <a href="mailto:booking@barasuara.com" class="direct-email"><i class="fas fa-envelope"
+                        style="margin-right: 8px;"></i> booking@barasuara.com</a>
             </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content text-center">
-            <div class="social-links" style="justify-content: center; display: flex; gap: 20px; margin-bottom: 15px;">
-                <a href="https://www.instagram.com/barasuara" target="_blank" rel="noopener noreferrer"
-                    aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.youtube.com/barasuara" target="_blank" rel="noopener noreferrer"
-                    aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://open.spotify.com/intl-id/artist/5RbI1PF4n02wWKmgjk7hAE?si=zHUmzxMMSkq_e1ENO2OcPQ&nd=1&dlsi=a7cf13a4230f4098"
-                    target="_blank" rel="noopener noreferrer" aria-label="Spotify"><i class="fab fa-spotify"></i></a>
-            </div>
-            <p style="margin: 0; font-size: 0.9rem; color: #888;">© 2026 Barasuara Fans Project. Dikelola Oleh SIG
-                Group.</p>
         </div>
-    </footer>
+    </section>
+</main>
 
-    <script src="lib/script.js" defer></script>
-</body>
-
-</html>
-
+<?php require __DIR__ . '/includes/layout_footer.php'; ?>
