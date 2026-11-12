@@ -1638,3 +1638,1243 @@ nav a.active::after {
         animation: none;
     }
 }
+
+/* =========================================
+   AUTH, TICKETING & ORDER (Pemesanan Tiket)
+   ========================================= */
+[hidden] {
+    display: none !important;
+}
+
+input[type="date"] {
+    color-scheme: dark;
+}
+
+.form-group select option {
+    background: #111;
+}
+
+/* --- Nav: tombol akun --- */
+nav {
+    align-items: center;
+}
+
+.nav-auth-link {
+    color: var(--secondary-color) !important;
+}
+
+.nav-logout-form {
+    margin: 0;
+}
+
+.nav-logout-btn {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-muted);
+    font: inherit;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.nav-logout-btn:hover {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* --- Flash message --- */
+.flash-stack {
+    max-width: 900px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.flash {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.flash-stack .flash {
+    margin-bottom: 0;
+}
+
+.flash i {
+    margin-top: 4px;
+}
+
+.flash ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.flash-success {
+    background: rgba(114, 188, 143, 0.1);
+    border-color: rgba(114, 188, 143, 0.4);
+    color: #9bd8b1;
+}
+
+.flash-error {
+    background: rgba(230, 57, 70, 0.1);
+    border-color: rgba(230, 57, 70, 0.4);
+    color: #f0959c;
+}
+
+.flash-info {
+    background: rgba(255, 106, 61, 0.08);
+    border-color: rgba(255, 106, 61, 0.35);
+    color: #ffb196;
+}
+
+/* --- Badge --- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.badge-lg {
+    font-size: 0.9rem;
+    padding: 6px 14px;
+}
+
+.badge-success { background: rgba(114, 188, 143, 0.15); color: #8fd6a9; border-color: rgba(114, 188, 143, 0.35); }
+.badge-warning { background: rgba(255, 193, 7, 0.12); color: #ffd25e; border-color: rgba(255, 193, 7, 0.35); }
+.badge-info    { background: rgba(255, 106, 61, 0.12); color: #ff9a76; border-color: rgba(255, 106, 61, 0.35); }
+.badge-danger  { background: rgba(230, 57, 70, 0.15); color: #f0959c; border-color: rgba(230, 57, 70, 0.35); }
+.badge-muted   { background: rgba(255, 255, 255, 0.06); color: #999; border-color: rgba(255, 255, 255, 0.1); }
+
+/* --- Auth card --- */
+.auth-card {
+    max-width: 460px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 40px;
+}
+
+.auth-card h2 {
+    font-size: 2rem;
+    margin-bottom: 18px;
+}
+
+.auth-subtitle {
+    color: #aaa;
+    font-size: 0.95rem;
+    margin: 0 0 28px;
+}
+
+.auth-switch {
+    text-align: center;
+    color: #999;
+    margin: 24px 0 0;
+    font-size: 0.92rem;
+}
+
+.auth-switch a,
+.back-link {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.field-error {
+    color: #f0959c;
+    font-size: 0.82rem;
+}
+
+.login-gate {
+    padding: 30px 20px;
+    border: 1px dashed rgba(255, 106, 61, 0.35);
+    border-radius: var(--radius-md);
+    background: rgba(255, 106, 61, 0.04);
+}
+
+.login-gate > i {
+    font-size: 2.2rem;
+    color: var(--secondary-color);
+}
+
+.login-gate p {
+    color: #bbb;
+    max-width: 420px;
+    margin: 14px auto 22px;
+}
+
+.gate-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* --- Tour: info harga per gelombang --- */
+.tier-price-list {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tier-price {
+    display: grid;
+    grid-template-columns: 80px auto 1fr;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.92rem;
+}
+
+.tier-name {
+    color: #999;
+}
+
+.tier-amount {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.tier-ended .tier-amount,
+.tier-inactive .tier-amount {
+    color: #666;
+    text-decoration: line-through;
+}
+
+.tier-active .tier-amount {
+    color: var(--secondary-color);
+}
+
+.tier-price .badge {
+    justify-self: start;
+}
+
+.tier-note {
+    margin: 10px 0 0 !important;
+    font-size: 0.82rem !important;
+    color: #999 !important;
+}
+
+.tour-footnote {
+    margin-top: 30px;
+    color: #777;
+    font-size: 0.85rem;
+}
+
+/* --- Order form layout --- */
+.order-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 25px;
+    align-items: start;
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.order-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    font-size: 1.1rem;
+}
+
+.panel-title .step {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+.panel-desc {
+    color: #999;
+    font-size: 0.88rem;
+    margin: -8px 0 16px;
+}
+
+.concert-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.concert-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0 0 8px;
+}
+
+.concert-meta {
+    margin: 0 0 4px;
+    color: #aaa;
+    font-size: 0.92rem;
+}
+
+.concert-meta i {
+    width: 18px;
+    color: #666;
+}
+
+.current-tier {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.current-price {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    line-height: 1.1;
+}
+
+.current-price small {
+    font-size: 0.8rem;
+    color: #888;
+    font-weight: 400;
+}
+
+.tier-deadline {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.qty-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.qty-stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.qty-btn {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.qty-btn:hover:not(:disabled) {
+    background: var(--primary-color);
+}
+
+.qty-btn:disabled {
+    color: #555;
+    cursor: not-allowed;
+}
+
+.qty-stepper input {
+    width: 60px;
+    height: 44px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: white;
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+    -moz-appearance: textfield;
+}
+
+.qty-stepper input::-webkit-inner-spin-button,
+.qty-stepper input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.qty-hint {
+    color: #999;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.input-readonly {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.holder-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.payment-option.selected {
+    border-color: var(--secondary-color);
+    background: rgba(255, 106, 61, 0.06);
+}
+
+.payment-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.payment-option small {
+    display: block;
+    color: #999;
+    font-size: 0.82rem;
+    margin-top: 2px;
+}
+
+.payment-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    background: white;
+    color: #111;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.payment-check {
+    margin-left: auto;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+}
+
+/* --- Ringkasan pesanan --- */
+.order-summary {
+    position: sticky;
+    top: 100px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+.order-summary h3 {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+}
+
+.order-summary dl,
+.order-detail-grid {
+    margin: 0;
+}
+
+.order-summary dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.92rem;
+}
+
+.order-summary dt {
+    color: #999;
+}
+
+.order-summary dd {
+    margin: 0;
+    text-align: right;
+}
+
+.summary-total {
+    border-bottom: none !important;
+    padding-top: 14px !important;
+    font-size: 1.05rem !important;
+}
+
+.summary-total dd {
+    font-weight: 700;
+    color: var(--secondary-color);
+    font-size: 1.25rem;
+}
+
+.agree-check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 16px 0;
+    font-size: 0.82rem;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.agree-check input {
+    margin-top: 3px;
+    accent-color: var(--primary-color);
+}
+
+.summary-note {
+    color: #888;
+    font-size: 0.8rem;
+    margin: 12px 0 0;
+}
+
+.order-errors {
+    max-width: 1050px;
+    margin: 0 auto 20px;
+}
+
+/* --- Status pesanan & QRIS --- */
+.status-wrapper {
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.status-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.muted-label {
+    color: #888;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.section h2.order-code {
+    font-size: 1.6rem;
+    margin: 4px 0 0;
+    letter-spacing: 1px;
+}
+
+.section h2.order-code::after {
+    display: none;
+}
+
+.order-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px 24px;
+}
+
+.order-detail-grid dt {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.order-detail-grid dd {
+    margin: 2px 0 0;
+    font-weight: 500;
+}
+
+.text-accent {
+    color: var(--secondary-color);
+    font-weight: 700 !important;
+}
+
+.qris-box {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.qris-code,
+.ticket-qr {
+    background: white;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+.qris-code img,
+.ticket-qr img {
+    display: block;
+}
+
+.qris-info {
+    flex: 1 1 260px;
+}
+
+.qris-amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0 0 12px;
+}
+
+.countdown {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin: 0 0 12px;
+}
+
+.countdown.expired {
+    color: #f0959c;
+}
+
+.qris-steps {
+    margin: 0;
+    padding-left: 18px;
+    color: #bbb;
+    font-size: 0.88rem;
+}
+
+.notice-demo {
+    margin-top: 20px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 193, 7, 0.08);
+    border: 1px dashed rgba(255, 193, 7, 0.4);
+    color: #ffd25e;
+    font-size: 0.85rem;
+}
+
+.status-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.status-actions form {
+    margin: 0;
+}
+
+/* --- E-ticket --- */
+.ticket-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.ticket-list-header h3 {
+    margin: 0;
+}
+
+.eticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.eticket {
+    display: flex;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: linear-gradient(135deg, #1c1210 0%, #120d0c 100%);
+    border: 1px solid rgba(194, 75, 47, 0.4);
+    page-break-inside: avoid;
+}
+
+.eticket-main {
+    flex: 1;
+    padding: 22px 26px;
+    border-right: 2px dashed rgba(255, 255, 255, 0.15);
+}
+
+.eticket-brand {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+.eticket h4 {
+    margin: 6px 0 10px;
+    font-size: 1.6rem;
+}
+
+.eticket-meta {
+    margin: 0 0 4px;
+    color: #bbb;
+    font-size: 0.88rem;
+}
+
+.eticket-holder {
+    margin: 14px 0 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.eticket-holder strong {
+    font-size: 1.1rem;
+}
+
+.eticket-stub {
+    width: 200px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.eticket-stub code {
+    font-size: 0.72rem;
+    color: #aaa;
+    word-break: break-all;
+    text-align: center;
+}
+
+/* --- Daftar pesanan --- */
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 18px 22px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-sm);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--transition-normal), transform var(--transition-normal);
+}
+
+.order-row:hover {
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.order-row-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.order-row-main code {
+    color: var(--secondary-color);
+    font-size: 0.85rem;
+}
+
+.order-row-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.order-row-total {
+    font-weight: 700;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+    .order-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .order-summary {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    nav {
+        align-items: stretch;
+    }
+
+    .nav-logout-form {
+        display: flex;
+        justify-content: center;
+        padding: 12px 0 0;
+    }
+
+    .current-tier {
+        align-items: flex-start;
+    }
+
+    .auth-card,
+    .order-panel {
+        padding: 22px 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .eticket {
+        flex-direction: column;
+    }
+
+    .eticket-main {
+        border-right: none;
+        border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .eticket-stub {
+        width: 100%;
+    }
+
+    .tier-price {
+        grid-template-columns: 70px 1fr;
+    }
+
+    .tier-price .badge {
+        grid-column: 1 / -1;
+    }
+}
+
+/* --- Cetak e-ticket --- */
+@media print {
+    header,
+    footer,
+    .back-link,
+    .ticket-list-header button,
+    .flash-stack,
+    #audio-player-global {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .fade-in {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .order-panel,
+    .eticket {
+        border: 1px solid #999;
+        background: white !important;
+        color: black;
+    }
+
+    .eticket-meta,
+    .muted-label,
+    .order-detail-grid dt {
+        color: #444 !important;
+    }
+}
+
+
+/* =========================================
+   ADMIN DASHBOARD (BARASUARA DARK ROCK THEME)
+   ========================================= */
+.admin-body {
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+.admin-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 36px;
+    background: rgba(13, 13, 13, 0.96);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    flex-wrap: wrap;
+}
+
+.admin-brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.admin-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-user-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+}
+
+.admin-user-pill i {
+    color: var(--secondary-color);
+}
+
+.admin-user-pill small {
+    color: #999;
+}
+
+.admin-subnav {
+    background: #121212;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0 36px;
+    overflow-x: auto;
+}
+
+.admin-subnav-inner {
+    display: flex;
+    gap: 6px;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.admin-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 16px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all var(--transition-fast);
+}
+
+.admin-tab:hover,
+.admin-tab.active {
+    color: var(--secondary-color);
+    border-bottom-color: var(--secondary-color);
+    background: rgba(255, 106, 61, 0.05);
+}
+
+.admin-main {
+    padding: 34px 36px 60px;
+}
+
+.admin-container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.admin-page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+}
+
+.admin-page-head h2 {
+    margin: 0 0 6px;
+    font-size: 1.75rem;
+}
+
+.admin-page-head p {
+    margin: 0;
+    color: #999;
+    font-size: 0.92rem;
+}
+
+.admin-head-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.admin-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-bottom: 26px;
+}
+
+.admin-stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-stat-card.accent {
+    background: linear-gradient(135deg, rgba(194, 75, 47, 0.18), rgba(255, 106, 61, 0.05));
+    border-color: rgba(255, 106, 61, 0.35);
+}
+
+.stat-label {
+    font-size: 0.82rem;
+    color: #aaa;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stat-label i {
+    color: var(--secondary-color);
+}
+
+.stat-value {
+    font-size: 1.55rem;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.admin-stat-card small {
+    color: #888;
+    font-size: 0.78rem;
+}
+
+.admin-two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 11px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    vertical-align: middle;
+}
+
+.admin-table th {
+    color: #999;
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.table-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.table-actions form {
+    margin: 0;
+}
+
+.btn-xs {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.btn-danger {
+    background: rgba(230, 57, 70, 0.15);
+    border: 1px solid rgba(230, 57, 70, 0.4);
+    color: #f0959c;
+}
+
+.btn-danger:hover {
+    background: #e63946;
+    color: #fff;
+}
+
+.scanner-result {
+    padding: 18px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 106, 61, 0.3);
+}
+
+input[type="datetime-local"] {
+    color-scheme: dark;
+}
+
+@media (max-width: 960px) {
+    .admin-two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-topbar,
+    .admin-subnav,
+    .admin-main {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+}
+
+/* =========================================
+   MODAL POPUP BERITA LENGKAP
+   ========================================= */
+.news-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.news-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.news-modal-card {
+    background: #181818;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    max-width: 650px;
+    width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.news-modal-overlay.active .news-modal-card {
+    transform: translateY(0) scale(1);
+}
+
+.news-modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.news-modal-header h3 {
+    margin: 6px 0 0;
+    font-size: 1.35rem;
+    color: #fff;
+    line-height: 1.3;
+}
+
+.news-modal-close {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.15s;
+}
+
+.news-modal-close:hover {
+    color: #fff;
+}
+
+.news-modal-body {
+    padding: 22px 24px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #ddd;
+    white-space: pre-line;
+}
+
+.news-modal-footer {
+    padding: 14px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
