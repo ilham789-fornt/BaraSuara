@@ -98,13 +98,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
 
             case 'create_tier':
+                $tourId = (int) $_POST['tour_id'];
+                $namaGelombang = trim((string) $_POST['nama_gelombang']);
+                if (!in_array($namaGelombang, ['Presale', 'Normal'], true)) {
+                    throw new RuntimeException('Nama gelombang tiket hanya boleh Presale atau Normal.');
+                }
+
+                // Validasi: Setiap kota tur hanya boleh memiliki 1x Presale dan 1x Normal
+                $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM ticket_tiers WHERE tour_id = ? AND nama_gelombang = ?');
+                $checkStmt->execute([$tourId, $namaGelombang]);
+                if ((int) $checkStmt->fetchColumn() > 0) {
+                    throw new RuntimeException("Kota tur ini sudah memiliki harga gelombang {$namaGelombang}. Setiap kota tur hanya dapat memiliki maksimal 1 Presale dan 1 Normal. Silakan gunakan tombol Edit pada tabel di bawah jika ingin mengubah harga atau kuotanya.");
+                }
+
                 $stmt = $pdo->prepare(
                     'INSERT INTO ticket_tiers (tour_id, nama_gelombang, price, kuota, max_per_order, waktu_mulai, waktu_berakhir, is_active)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
                 );
                 $stmt->execute([
-                    (int) $_POST['tour_id'],
-                    (string) $_POST['nama_gelombang'],
+                    $tourId,
+                    $namaGelombang,
                     (float) $_POST['price'],
                     (int) $_POST['kuota'],
                     (int) $_POST['max_per_order'],
@@ -112,10 +125,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     str_replace('T', ' ', (string) $_POST['waktu_berakhir']) . ':59',
                     !empty($_POST['is_active']) ? 1 : 0,
                 ]);
-                flash('success', 'Gelombang tiket baru berhasil ditambahkan.');
+                flash('success', 'Gelombang tiket ' . $namaGelombang . ' berhasil ditambahkan.');
                 break;
 
             case 'update_tier':
+                $tierId = (int) $_POST['id'];
+                $tourId = (int) $_POST['tour_id'];
+                $namaGelombang = trim((string) $_POST['nama_gelombang']);
+                if (!in_array($namaGelombang, ['Presale', 'Normal'], true)) {
+                    throw new RuntimeException('Nama gelombang tiket hanya boleh Presale atau Normal.');
+                }
+
+                // Validasi: Cegah perubahan menjadi gelombang yang sudah ada pada tur yang sama
+                $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM ticket_tiers WHERE tour_id = ? AND nama_gelombang = ? AND id != ?');
+                $checkStmt->execute([$tourId, $namaGelombang, $tierId]);
+                if ((int) $checkStmt->fetchColumn() > 0) {
+                    throw new RuntimeException("Kota tur ini sudah memiliki gelombang {$namaGelombang} yang lain. Tidak dapat menduplikat gelombang pada kota yang sama.");
+                }
+
                 $mulai = str_replace('T', ' ', (string) $_POST['waktu_mulai']);
                 if (strlen($mulai) === 16) {
                     $mulai .= ':00';
@@ -131,17 +158,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                      WHERE id = ?'
                 );
                 $stmt->execute([
-                    (int) $_POST['tour_id'],
-                    (string) $_POST['nama_gelombang'],
+                    $tourId,
+                    $namaGelombang,
                     (float) $_POST['price'],
                     (int) $_POST['kuota'],
                     (int) $_POST['max_per_order'],
                     $mulai,
                     $akhir,
                     !empty($_POST['is_active']) ? 1 : 0,
-                    (int) $_POST['id'],
+                    $tierId,
                 ]);
-                flash('success', 'Gelombang tiket berhasil diperbarui.');
+                flash('success', 'Gelombang tiket ' . $namaGelombang . ' berhasil diperbarui.');
                 break;
 
             case 'delete_tier':
@@ -164,6 +191,12 @@ $tiers = $pdo->query(
      JOIN tours tr ON tr.id = tt.tour_id
      ORDER BY tr.tanggal_konser ASC, tt.waktu_mulai ASC'
 )->fetchAll();
+
+// Peta gelombang yang sudah dibuat per tour_id untuk validasi & UI dropdown
+$existingTiersByTour = [];
+foreach ($tiers as $tr) {
+    $existingTiersByTour[(int) $tr['tour_id']][$tr['nama_gelombang']] = (int) $tr['id'];
+}
 
 $editTour = null;
 if (isset($_GET['edit_tour'])) {
@@ -319,22 +352,38 @@ require __DIR__ . '/includes/header.php';
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Pilih Kota Tour</label>
-                        <select name="tour_id" required>
-                            <?php foreach ($tours as $t): ?>
-                                <option value="<?= (int) $t['id'] ?>" <?= ((int) ($editTier['tour_id'] ?? 0) === (int) $t['id']) ? 'selected' : '' ?>>
-                                    <?= e($t['kota']) ?> (<?= e($t['tour_code']) ?>)
+                        <select name="tour_id" id="tier_tour_id" required>
+                            <?php foreach ($tours as $t): 
+                                $tId = (int) $t['id'];
+                                $hasPresale = isset($existingTiersByTour[$tId]['Presale']);
+                                $hasNormal  = isset($existingTiersByTour[$tId]['Normal']);
+                                $statusNote = '';
+                                if ($hasPresale && $hasNormal) {
+                                    $statusNote = ' • (Lengkap: Presale & Normal)';
+                                } elseif ($hasPresale) {
+                                    $statusNote = ' • (Sudah ada Presale)';
+                                } elseif ($hasNormal) {
+                                    $statusNote = ' • (Sudah ada Normal)';
+                                } else {
+                                    $statusNote = ' • (Belum ada tiket)';
+                                }
+                            ?>
+                                <option value="<?= $tId ?>" <?= ((int) ($editTier['tour_id'] ?? 0) === $tId) ? 'selected' : '' ?>>
+                                    <?= e($t['kota']) ?> (<?= e($t['tour_code']) ?>)<?= e($statusNote) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Nama Gelombang</label>
-                        <select name="nama_gelombang" required>
+                        <select name="nama_gelombang" id="tier_nama_gelombang" required>
                             <option value="Presale" <?= (($editTier['nama_gelombang'] ?? '') === 'Presale') ? 'selected' : '' ?>>Presale</option>
                             <option value="Normal" <?= (($editTier['nama_gelombang'] ?? '') === 'Normal') ? 'selected' : '' ?>>Normal</option>
                         </select>
                     </div>
                 </div>
+
+                <div id="tier_wave_warning" class="alert alert-warning d-none" style="font-size: 0.85rem; padding: 10px 14px; margin-bottom: 14px; border-radius: 8px; border-left: 4px solid #ffc107;"></div>
 
                 <div class="form-grid">
                     <div class="form-group">
@@ -374,7 +423,7 @@ require __DIR__ . '/includes/header.php';
                 </label>
 
                 <div class="status-actions" style="margin-top: 8px;">
-                    <button type="submit" class="btn-sm">
+                    <button type="submit" id="tier_submit_btn" class="btn-sm">
                         <i class="fas fa-save"></i> <?= $editTier ? 'Simpan Gelombang' : 'Tambah Gelombang' ?>
                     </button>
                     <?php if ($editTier): ?>
@@ -469,6 +518,75 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tourCodeInput.value) {
             updateTourCodePreview();
         }
+    }
+
+    // Kontrol validasi gelombang tiket (Presale / Normal max 1x per tour)
+    const existingTiers = <?= json_encode($existingTiersByTour) ?>;
+    const currentEditTierId = <?= $editTier ? (int) $editTier['id'] : 'null' ?>;
+    const tourSelect = document.getElementById('tier_tour_id');
+    const waveSelect = document.getElementById('tier_nama_gelombang');
+    const warningBox = document.getElementById('tier_wave_warning');
+    const submitTierBtn = document.getElementById('tier_submit_btn');
+
+    if (tourSelect && waveSelect) {
+        function updateWaveOptions() {
+            const tourId = parseInt(tourSelect.value, 10);
+            const tourWaves = existingTiers[tourId] || {};
+
+            const presaleExistingId = tourWaves['Presale'] !== undefined ? parseInt(tourWaves['Presale'], 10) : null;
+            const normalExistingId  = tourWaves['Normal'] !== undefined ? parseInt(tourWaves['Normal'], 10) : null;
+
+            // Dianggap sudah terpakai jika id ada dan BUKAN id tier yang sedang kita edit saat ini
+            const isPresaleTaken = presaleExistingId !== null && presaleExistingId !== currentEditTierId;
+            const isNormalTaken  = normalExistingId !== null && normalExistingId !== currentEditTierId;
+
+            const presaleOpt = waveSelect.querySelector('option[value="Presale"]');
+            const normalOpt  = waveSelect.querySelector('option[value="Normal"]');
+
+            if (presaleOpt) {
+                presaleOpt.disabled = isPresaleTaken;
+                presaleOpt.textContent = isPresaleTaken ? 'Presale (Sudah dibuat)' : 'Presale';
+            }
+            if (normalOpt) {
+                normalOpt.disabled = isNormalTaken;
+                normalOpt.textContent = isNormalTaken ? 'Normal (Sudah dibuat)' : 'Normal';
+            }
+
+            if (isPresaleTaken && isNormalTaken) {
+                if (warningBox) {
+                    warningBox.className = 'alert alert-warning';
+                    warningBox.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> <strong>Kota tur ini sudah memiliki harga Presale dan Normal lengkap.</strong><br>Setiap kota tur hanya boleh memiliki maksimal 1x Presale dan 1x Normal. Jika ingin mengubah harga atau kuota, silakan gunakan tombol <strong>Edit</strong> pada tabel di sebelah kanan.';
+                    warningBox.classList.remove('d-none');
+                }
+                if (submitTierBtn) {
+                    submitTierBtn.disabled = true;
+                    submitTierBtn.style.opacity = '0.5';
+                    submitTierBtn.style.cursor = 'not-allowed';
+                }
+            } else {
+                if (warningBox) {
+                    warningBox.classList.add('d-none');
+                    warningBox.innerHTML = '';
+                }
+                if (submitTierBtn) {
+                    submitTierBtn.disabled = false;
+                    submitTierBtn.style.opacity = '1';
+                    submitTierBtn.style.cursor = 'pointer';
+                }
+
+                // Otomatis arahkan pilihan ke gelombang yang belum dibuat jika opsi yang aktif saat ini disable
+                if (waveSelect.selectedOptions.length > 0 && waveSelect.selectedOptions[0].disabled) {
+                    if (!isPresaleTaken) {
+                        waveSelect.value = 'Presale';
+                    } else if (!isNormalTaken) {
+                        waveSelect.value = 'Normal';
+                    }
+                }
+            }
+        }
+
+        tourSelect.addEventListener('change', updateWaveOptions);
+        updateWaveOptions();
     }
 });
 </script>

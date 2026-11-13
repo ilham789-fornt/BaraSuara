@@ -75,7 +75,9 @@ CREATE TABLE `ticket_tiers` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT `fk_ticket_tiers_tour`
     FOREIGN KEY (`tour_id`) REFERENCES `tours` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `uq_ticket_tiers_tour_wave`
+    UNIQUE (`tour_id`, `nama_gelombang`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
